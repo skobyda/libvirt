@@ -144,7 +144,6 @@ testUnicode(const void *opaque ATTRIBUTE_UNUSED)
     return ret;
 }
 
-/* Point of this test is to see how table behaves with right to left writing*/
 static int
 testUnicodeArabic(const void *opaque ATTRIBUTE_UNUSED)
 {
@@ -350,6 +349,12 @@ mymain(void)
     if (virTestRun("testUnicode", testUnicode, NULL) < 0)
         ret = -1;
 
+/*
+ * gnulib's functions iswprint() and wcwidth() return different results
+ * on different platforms (freebsd 11, possibly also mingw).
+ * Bug filled against gnulib
+ */
+#if defined(__linux__)
     if (virTestRun("testUnicodeArabic", testUnicodeArabic, NULL) < 0)
         ret = -1;
 
@@ -357,6 +362,7 @@ mymain(void)
                    testUnicodeZeroWidthChar,
                    NULL) < 0)
         ret = -1;
+#endif
 
     if (virTestRun("testUnicodeCombiningChar",
                    testUnicodeCombiningChar,
