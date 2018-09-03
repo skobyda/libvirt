@@ -1036,3 +1036,5 @@ AC_MSG_NOTICE([Privileges])
 AC_MSG_NOTICE([])
 LIBVIRT_RESULT_QEMU_PRIVILEGES
 AC_MSG_NOTICE([])
+
+gl_cv_func_wcwidth_works=no

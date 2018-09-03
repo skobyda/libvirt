@@ -235,8 +235,8 @@ vshTableSafeEncode(const char *s, size_t *width)
 
     while (p && *p) {
         if ((*p == '\\' && *(p + 1) == 'x') ||
-            c_iscntrl(*p)) {
-            snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", *p);
+            c_iscntrl((unsigned char) *p)) {
+            snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", (unsigned char) *p);
             buf += HEX_ENCODE_LENGTH;
             *width += HEX_ENCODE_LENGTH;
             p++;
@@ -253,18 +253,18 @@ vshTableSafeEncode(const char *s, size_t *width)
                  * Not valid multibyte sequence -- maybe it's
                  * printable char according to the current locales.
                  */
-                if (!c_isprint(*p)) {
-                    snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", *p);
+                if (!c_isprint((unsigned char) *p)) {
+                    snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", (unsigned char) *p);
                     buf += HEX_ENCODE_LENGTH;
                     *width += HEX_ENCODE_LENGTH;
                 } else {
                     *buf++ = *p;
                     (*width)++;
                 }
-            } else if (!iswprint(wc)) {
+            } else if (wcwidth(wc) < 0) {
                 size_t i;
                 for (i = 0; i < len; i++) {
-                    snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", p[i]);
+                    snprintf(buf, HEX_ENCODE_LENGTH + 1, "\\x%02x", (unsigned char) p[i]);
                     buf += HEX_ENCODE_LENGTH;
                     *width += HEX_ENCODE_LENGTH;
                 }
